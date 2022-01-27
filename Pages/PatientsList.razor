@@ -1,0 +1,39 @@
+﻿@page "/patients"
+
+@using Data
+
+@inject EpiKourosContext dbContext
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Patients</h1>
+
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.Advanced" AllowSorting="true"
+    PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+    Data="@patients" TItem="Bed" LogicalFilterOperator="LogicalFilterOperator.And">
+    <Columns>
+        <RadzenDataGridColumn TItem="Bed" Property="RoomName" Title="Room" />
+        <RadzenDataGridColumn TItem="Bed" Property="BedId" Title="Bed" />
+        <RadzenDataGridColumn TItem="Bed" Property="PatName" Title="Patient" />
+        <RadzenDataGridColumn TItem="Bed" Title="Sex">
+            <Template Context="data">
+                @if (data.Sex == "Άρρεν")
+                {
+                    <span><i class="bi bi-gender-male"></i></span>
+                }
+                else
+                {
+                    <span><i class="bi bi-gender-female"></i></span>
+                }
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+@code {
+    IEnumerable<Bed> patients;
+
+    protected override void OnInitialized()
+    {
+        patients = dbContext.Beds;
+    }
+}

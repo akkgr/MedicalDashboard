@@ -4,18 +4,19 @@
 
 @inject EpiKourosContext dbContext
 
-<PageTitle>Counter</PageTitle>
+<PageTitle>Patients</PageTitle>
 
 <h1>Patients</h1>
 
 <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.Advanced" AllowSorting="true"
-    PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
-    Data="@patients" TItem="Bed" LogicalFilterOperator="LogicalFilterOperator.And">
+    PageSize="10" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+    Data="@patients" TItem="Patient" LogicalFilterOperator="LogicalFilterOperator.And">
     <Columns>
-        <RadzenDataGridColumn TItem="Bed" Property="RoomName" Title="Room" />
-        <RadzenDataGridColumn TItem="Bed" Property="BedId" Title="Bed" />
-        <RadzenDataGridColumn TItem="Bed" Property="PatName" Title="Patient" />
-        <RadzenDataGridColumn TItem="Bed" Title="Sex">
+        <RadzenDataGridColumn TItem="Patient" Property="Id" Title="ID" />
+        <RadzenDataGridColumn TItem="Patient" Property="RoomName" Title="Room" />
+        <RadzenDataGridColumn TItem="Patient" Property="BedId" Title="Bed" />
+        <RadzenDataGridColumn TItem="Patient" Property="PatName" Title="Patient" />
+        <RadzenDataGridColumn TItem="Patient" Title="Sex">
             <Template Context="data">
                 @if (data.Sex == "Άρρεν")
                 {
@@ -27,10 +28,17 @@
                 }
             </Template>
         </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Patient" Property="InDate" Title="Admission" />
+        <RadzenDataGridColumn TItem="Patient" Title="" Filterable=false Sortable=false
+            TextAlign=Radzen.TextAlign.Center>
+            <Template Context="data">
+                <a href="@($"monitor/{data.RoomId}/{data.BedId}")"><i class="bi bi-display"></i></a>
+            </Template>
+        </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
 @code {
-    IEnumerable<Bed> patients;
+    IEnumerable<Patient> patients;
 
     protected override void OnInitialized()
     {

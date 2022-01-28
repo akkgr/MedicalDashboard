@@ -1,0 +1,21 @@
+@page "/monitor/{Id}"
+
+@using Data
+
+@inject EpiKourosContext dbContext
+
+<PageTitle>Patients</PageTitle>
+
+<h1>Patients</h1>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    Patient patient { get; set; }
+    IEnumerable<Sensor> sensors;
+
+    protected override void OnParameterChangedAsync()
+    {
+        patient = await dbContext.Beds.FirstOrDefaultAsync(p => p.Id == id);
+    }
+}

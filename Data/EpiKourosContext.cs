@@ -9,16 +9,27 @@ public class EpiKourosContext : DbContext
     {
     }
 
-    public DbSet<Bed> Beds { get; set; }
+    public DbSet<Patient> Beds { get; set; }
+    public DbSet<Sensor> Sensors { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Bed>().ToTable("beds");
+        modelBuilder.Entity<Patient>().ToTable("beds");
+        modelBuilder.Entity<Patient>().HasKey(m => m.Id);
+        modelBuilder.Entity<Patient>().Property(b => b.RoomId).HasColumnName("ROOM_ID");
+        modelBuilder.Entity<Patient>().Property(b => b.RoomName).HasColumnName("ROOM_NAME");
+        modelBuilder.Entity<Patient>().Property(b => b.BedId).HasColumnName("BED_ID");
+        modelBuilder.Entity<Patient>().Property(b => b.PatName).HasColumnName("PAT_NAME");
+        modelBuilder.Entity<Patient>().Property(b => b.Sex).HasColumnName("PAT_SEX");
+        modelBuilder.Entity<Patient>().Property(b => b.InDate).HasColumnName("ADM_IN_DATETIME");
 
-        modelBuilder.Entity<Bed>().HasKey(m => m.Id);
-        modelBuilder.Entity<Bed>().Property(b => b.RoomName).HasColumnName("ROOM_NAME");
-        modelBuilder.Entity<Bed>().Property(b => b.BedId).HasColumnName("BED_ID");
-        modelBuilder.Entity<Bed>().Property(b => b.PatName).HasColumnName("PAT_NAME");
-        modelBuilder.Entity<Bed>().Property(b => b.Sex).HasColumnName("PAT_SEX");
+        modelBuilder.Entity<Sensor>().ToTable("vdevslog");
+        modelBuilder.Entity<Sensor>().HasKey(m => m.Id);
+        modelBuilder.Entity<Sensor>().Property(b => b.RoomId).HasColumnName("bed");
+        modelBuilder.Entity<Sensor>().Property(b => b.BedId).HasColumnName("room");
+        modelBuilder.Entity<Sensor>().Property(b => b.InDate).HasColumnName("Inserted");
+        modelBuilder.Entity<Sensor>().Property(b => b.BPM).HasColumnName("bpm");
+        modelBuilder.Entity<Sensor>().Property(b => b.SPO2).HasColumnName("spo2");
+        modelBuilder.Entity<Sensor>().Property(b => b.PIPI).HasColumnName("pipi");
     }
 }

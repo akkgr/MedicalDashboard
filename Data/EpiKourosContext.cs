@@ -16,6 +16,7 @@ public class EpiKourosContext : DbContext
     {
         modelBuilder.Entity<Patient>().ToTable("beds");
         modelBuilder.Entity<Patient>().HasKey(m => m.Id);
+        modelBuilder.Entity<Patient>().Property(m => m.Id).HasColumnName("id");
         modelBuilder.Entity<Patient>().Property(b => b.RoomId).HasColumnName("ROOM_ID");
         modelBuilder.Entity<Patient>().Property(b => b.RoomName).HasColumnName("ROOM_NAME");
         modelBuilder.Entity<Patient>().Property(b => b.BedId).HasColumnName("BED_ID");
@@ -25,8 +26,9 @@ public class EpiKourosContext : DbContext
 
         modelBuilder.Entity<Sensor>().ToTable("vdevslog");
         modelBuilder.Entity<Sensor>().HasKey(m => m.Id);
-        modelBuilder.Entity<Sensor>().Property(b => b.RoomId).HasColumnName("bed");
-        modelBuilder.Entity<Sensor>().Property(b => b.BedId).HasColumnName("room");
+        modelBuilder.Entity<Patient>().Property(m => m.Id).HasColumnName("id");
+        modelBuilder.Entity<Sensor>().Property(b => b.RoomId).HasColumnName("room");
+        modelBuilder.Entity<Sensor>().Property(b => b.BedId).HasColumnName("bed");
         modelBuilder.Entity<Sensor>().Property(b => b.InDate).HasColumnName("Inserted");
         modelBuilder.Entity<Sensor>().Property(b => b.BPM).HasColumnName("bpm");
         modelBuilder.Entity<Sensor>().Property(b => b.SPO2).HasColumnName("spo2");

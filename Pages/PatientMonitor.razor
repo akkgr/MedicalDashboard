@@ -1,21 +1,54 @@
-@page "/monitor/{Id}"
+@page "/monitor/{Id:int}"
 
+@using Microsoft.EntityFrameworkCore;
 @using Data
 
 @inject EpiKourosContext dbContext
 
-<PageTitle>Patients</PageTitle>
+<PageTitle>Patient Monitor</PageTitle>
 
-<h1>Patients</h1>
+<h1>Patient Monitor</h1>
+
+<RadzenChart>
+    <RadzenLineSeries Smooth=true Data="@sensors" CategoryProperty="InDate" Title="BPM" LineType="LineType.Dashed"
+        ValueProperty="BPM">
+        <RadzenMarkers MarkerType="MarkerType.Square" />
+    </RadzenLineSeries>
+    <RadzenLineSeries Smooth=true Data="@sensors" CategoryProperty="InDate" Title="SPO2" ValueProperty="SPO2">
+        <RadzenMarkers MarkerType="MarkerType.Circle" />
+    </RadzenLineSeries>
+    <RadzenCategoryAxis Padding="20" FormatString="{0:HH-mm}" />
+    <RadzenValueAxis>
+        <RadzenGridLines Visible="true" />
+    </RadzenValueAxis>
+</RadzenChart>
+<RadzenRadialGauge Style="width: 300px; height: 300px;">
+    <RadzenRadialGaugeScale StartAngle="-150" EndAngle="150" Step="20" Min="0" Max="260"
+        TickPosition=@GaugeTickPosition.Inside>
+        <RadzenRadialGaugeScalePointer Value=@bpm Length="0.6" ShowValue=true>
+            <Template Context="pointer">
+                <h4>
+                    @pointer.Value <sup>bpm</sup>
+                </h4>
+            </Template>
+        </RadzenRadialGaugeScalePointer>
+        <RadzenRadialGaugeScaleRange From="0" To="90" Fill="green" />
+        <RadzenRadialGaugeScaleRange From="90" To="140" Fill="orange" />
+        <RadzenRadialGaugeScaleRange From="140" To="260" Fill="red" />
+    </RadzenRadialGaugeScale>
+</RadzenRadialGauge>
 
 @code {
     [Parameter]
     public int Id { get; set; }
     Patient patient { get; set; }
     IEnumerable<Sensor> sensors;
+    double bpm = 100;
 
-    protected override void OnParameterChangedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        patient = await dbContext.Beds.FirstOrDefaultAsync(p => p.Id == id);
+        patient = await dbContext.Beds.FirstOrDefaultAsync(p => p.Id == Id);
+        sensors = await dbContext.Sensors.Where(p => p.RoomId == "100" && p.BedId == 1 && p.BPM > 0 && p.SPO2 > 0)
+        .ToArrayAsync();
     }
 }

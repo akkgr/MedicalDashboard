@@ -32,7 +32,7 @@
         <RadzenDataGridColumn TItem="Patient" Title="" Filterable=false Sortable=false
             TextAlign=Radzen.TextAlign.Center>
             <Template Context="data">
-                <a href="@($"monitor/{data.RoomId}/{data.BedId}")"><i class="bi bi-display"></i></a>
+                <a href="@($"monitor/{data.Id}")"><i class="bi bi-display"></i></a>
             </Template>
         </RadzenDataGridColumn>
     </Columns>

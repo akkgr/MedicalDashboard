@@ -1,6 +1,6 @@
 @page "/monitor/{Id:int}"
 
-@using Microsoft.EntityFrameworkCore;
+@using Microsoft.EntityFrameworkCore
 @using Data
 
 @inject EpiKourosContext dbContext
@@ -8,47 +8,122 @@
 <PageTitle>Patient Monitor</PageTitle>
 
 <h1>Patient Monitor</h1>
+<h2>@last.ToString("dd/MM/yyyy HH:mm")</h2>
 
-<RadzenChart>
-    <RadzenLineSeries Smooth=true Data="@sensors" CategoryProperty="InDate" Title="BPM" LineType="LineType.Dashed"
-        ValueProperty="BPM">
-        <RadzenMarkers MarkerType="MarkerType.Square" />
-    </RadzenLineSeries>
-    <RadzenLineSeries Smooth=true Data="@sensors" CategoryProperty="InDate" Title="SPO2" ValueProperty="SPO2">
-        <RadzenMarkers MarkerType="MarkerType.Circle" />
-    </RadzenLineSeries>
-    <RadzenCategoryAxis Padding="20" FormatString="{0:HH-mm}" />
-    <RadzenValueAxis>
-        <RadzenGridLines Visible="true" />
-    </RadzenValueAxis>
-</RadzenChart>
-<RadzenRadialGauge Style="width: 300px; height: 300px;">
-    <RadzenRadialGaugeScale StartAngle="-150" EndAngle="150" Step="20" Min="0" Max="260"
-        TickPosition=@GaugeTickPosition.Inside>
-        <RadzenRadialGaugeScalePointer Value=@bpm Length="0.6" ShowValue=true>
-            <Template Context="pointer">
-                <h4>
-                    @pointer.Value <sup>bpm</sup>
-                </h4>
-            </Template>
-        </RadzenRadialGaugeScalePointer>
-        <RadzenRadialGaugeScaleRange From="0" To="90" Fill="green" />
-        <RadzenRadialGaugeScaleRange From="90" To="140" Fill="orange" />
-        <RadzenRadialGaugeScaleRange From="140" To="260" Fill="red" />
-    </RadzenRadialGaugeScale>
-</RadzenRadialGauge>
+<div class="row">
+    <div class="col-8">
+        <RadzenChart @ref="chart0">
+            <RadzenLineSeries Smooth=true Data="@sensors" CategoryProperty="InDate" Title="BPM" ValueProperty="BPM" />
+            <RadzenCategoryAxis Padding="20" FormatString="{0:mm:ss}" />
+            <RadzenValueAxis>
+                <RadzenGridLines Visible="true" />
+            </RadzenValueAxis>
+        </RadzenChart>
+    </div>
+    <div class="col-4">
+        <RadzenRadialGauge Style="width: 250px; height: 250px;">
+            <RadzenRadialGaugeScale StartAngle="-150" EndAngle="150" Step="20" Min="0" Max="260"
+                TickPosition=@GaugeTickPosition.Inside>
+                <RadzenRadialGaugeScalePointer Value=@bpm Length="0.6" ShowValue=true>
+                    <Template Context="pointer">
+                        <h4>
+                            @pointer.Value <sup>bpm</sup>
+                        </h4>
+                    </Template>
+                </RadzenRadialGaugeScalePointer>
+                <RadzenRadialGaugeScaleRange From="0" To="90" Fill="green" />
+                <RadzenRadialGaugeScaleRange From="90" To="140" Fill="orange" />
+                <RadzenRadialGaugeScaleRange From="140" To="260" Fill="red" />
+            </RadzenRadialGaugeScale>
+        </RadzenRadialGauge>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-8">
+        <RadzenChart @ref="chart1">
+            <RadzenLineSeries Smooth=true Data="@sensors" CategoryProperty="InDate" Title="SPO2" ValueProperty="SPO2" />
+            <RadzenCategoryAxis Padding="20" FormatString="{0:HH:mm}" />
+            <RadzenValueAxis>
+                <RadzenGridLines Visible="true" />
+            </RadzenValueAxis>
+        </RadzenChart>
+    </div>
+    <div class="col-4">
+        <RadzenRadialGauge Style="width: 250px; height: 250px;">
+            <RadzenRadialGaugeScale StartAngle="-150" EndAngle="150" Step="20" Min="0" Max="260"
+                TickPosition=@GaugeTickPosition.Inside>
+                <RadzenRadialGaugeScalePointer Value=@spo2 Length="0.6" ShowValue=true>
+                    <Template Context="pointer">
+                        <h4>
+                            @pointer.Value <sup>SPO2</sup>
+                        </h4>
+                    </Template>
+                </RadzenRadialGaugeScalePointer>
+                <RadzenRadialGaugeScaleRange From="0" To="90" Fill="green" />
+                <RadzenRadialGaugeScaleRange From="90" To="140" Fill="orange" />
+                <RadzenRadialGaugeScaleRange From="140" To="260" Fill="red" />
+            </RadzenRadialGaugeScale>
+        </RadzenRadialGauge>
+    </div>
+</div>
 
 @code {
     [Parameter]
     public int Id { get; set; }
     Patient patient { get; set; }
-    IEnumerable<Sensor> sensors;
-    double bpm = 100;
+    List<Sensor> sensors = new List<Sensor>();
+    List<Sensor> data;
+    double bpm = 0;
+    double spo2 = 0;
+    DateTime last;
+    RadzenChart chart0;
+    RadzenChart chart1;
+
+    protected override void OnInitialized()
+    {
+        System.Timers.Timer timer = new System.Timers.Timer();
+        timer.Interval = 1000; // 3 secs in milliseconds
+        timer.Elapsed += OnTimedEvent;
+        timer.AutoReset = true;
+        timer.Enabled = true;
+    }
+
+    void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e)
+    {
+        InvokeAsync(async () =>
+        {
+            last = last.AddMinutes(1);
+            sensors.RemoveAt(0);
+            var random = new Random();
+            int index = random.Next(data.Count);
+            var ri = data[index];
+            sensors.Add(new Sensor
+            {
+                InDate = last,
+                BPM = ri.BPM,
+                SPO2 = ri.SPO2
+            });
+            bpm = sensors.Last().BPM;
+            spo2 = sensors.Last().SPO2;
+            sensors = sensors.ToList();
+            await chart0.Reload();
+            await chart1.Reload();
+        });
+    }
 
     protected override async Task OnParametersSetAsync()
     {
         patient = await dbContext.Beds.FirstOrDefaultAsync(p => p.Id == Id);
-        sensors = await dbContext.Sensors.Where(p => p.RoomId == "100" && p.BedId == 1 && p.BPM > 0 && p.SPO2 > 0)
-        .ToArrayAsync();
+        data = await dbContext.Sensors
+        .Where(p => p.RoomId == "100" && p.BedId == 1 && p.BPM > 0 && p.SPO2 > 0 && p.InDate != null)
+        .OrderBy(p => p.InDate)
+        .ToListAsync();
+
+        last = data.Last().InDate.Value;
+        var start = last.AddMinutes(-20);
+        sensors = new List<Sensor>(data.Where(t => t.InDate >= start));
+        bpm = sensors.Last().BPM;
+        spo2 = sensors.Last().SPO2;
     }
 }

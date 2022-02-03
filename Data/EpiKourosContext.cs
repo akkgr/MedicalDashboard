@@ -14,7 +14,7 @@ public class EpiKourosContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Patient>().ToTable("beds");
+        modelBuilder.Entity<Patient>().ToTable("beds_old");
         modelBuilder.Entity<Patient>().HasKey(m => m.Id);
         modelBuilder.Entity<Patient>().Property(m => m.Id).HasColumnName("id");
         modelBuilder.Entity<Patient>().Property(b => b.RoomId).HasColumnName("ROOM_ID");
@@ -29,7 +29,7 @@ public class EpiKourosContext : DbContext
         modelBuilder.Entity<Patient>().Property(m => m.Id).HasColumnName("id");
         modelBuilder.Entity<Sensor>().Property(b => b.RoomId).HasColumnName("room");
         modelBuilder.Entity<Sensor>().Property(b => b.BedId).HasColumnName("bed");
-        modelBuilder.Entity<Sensor>().Property(b => b.InDate).HasColumnName("Inserted");
+        modelBuilder.Entity<Sensor>().Property(b => b.InDate).HasColumnName("updtime");
         modelBuilder.Entity<Sensor>().Property(b => b.BPM).HasColumnName("bpm");
         modelBuilder.Entity<Sensor>().Property(b => b.SPO2).HasColumnName("spo2");
         modelBuilder.Entity<Sensor>().Property(b => b.PIPI).HasColumnName("pipi");

@@ -10,7 +10,7 @@
 <div class="card mb-2">
     <div class="card-body">
         <div class="row">
-            <div class="col-10">
+            <div class="col-7">
                 <h5>@patient.Surname @patient.Firstname </h5>
                 <div>
                     <span class="fw-bold me-2">Father Name :</span><span class="me-4">@patient.Fathername</span>
@@ -19,6 +19,8 @@
                 <div>
                     <span class="fw-bold me-2">Admission Date :</span><span
                         class="me-4">@patient.InDate.ToString("f")</span>
+                </div>
+                <div>
                     <span class="fw-bold me-2">Department :</span><span class="me-4">@patient.Department</span>
                     <span class="fw-bold me-2">Room :</span><span class="me-4">@patient.Room</span>
                     <span class="fw-bold me-2">Bed :</span><span>@patient.Bed.ToString()</span>
@@ -27,8 +29,22 @@
                     <span class="fw-bold me-2">Diagnosis :</span><span>@patient.Description</span>
                 </div>
             </div>
-            <div class="col-2">
-                <a href="/patients" class="btn btn-outline-primary">Patient List</a>
+            <div class="col-5">
+                <div class="mb-3 text-end">
+                    <a href="/patients" class="btn btn-outline-primary">Patient List</a>
+                </div>
+                <div class="input-group mt-3">
+                    <div class="input-group-text">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" checked="@live" @onclick="CheckChanged"
+                                title="Live Feed">
+                        </div>
+                    </div>
+                    <input type="date" class="form-control" value="@last.ToString("yyyy-MM-dd")" disabled="@live"
+                        @onchange="DateChanged" />
+                    <input type="time" class="form-control" value="@last.ToString("HH:mm")" disabled="@live"
+                        @onchange="TimeChanged" />
+                </div>
             </div>
         </div>
     </div>
@@ -39,8 +55,14 @@
         <div class="row">
             <div class="col-8">
                 <RadzenChart @ref="chart0" Style="height: 240px;">
-                    <RadzenLineSeries Stroke="blue" Smooth=true Data="@sensors" CategoryProperty="InDate" Title="BPM"
+                    <RadzenLineSeries Stroke="purple" Smooth=true Data="@sensors" CategoryProperty="InDate" Title="BPM"
                         ValueProperty="BPM" />
+                    <RadzenLineSeries Stroke="grey" Smooth=true Data="@sensors1" CategoryProperty="InDate" Title="MAX"
+                        LineType="LineType.Solid" ValueProperty="MAX" />
+                    <RadzenLineSeries Stroke="grey" Smooth=true Data="@sensors1" CategoryProperty="InDate" Title="MID"
+                        LineType="LineType.Dashed" ValueProperty="MID" />
+                    <RadzenLineSeries Stroke="grey" Smooth=true Data="@sensors1" CategoryProperty="InDate" Title="MIN"
+                        LineType="LineType.Dotted" ValueProperty="MIN" />
                     <RadzenCategoryAxis Padding="20" FormatString="{0:HH:mm}" />
                     <RadzenValueAxis>
                         <RadzenGridLines Visible="true" />
@@ -49,7 +71,7 @@
             </div>
             <div class="col-4">
                 <RadzenRadialGauge Style="width: 240px; height: 240px;">
-                    <RadzenRadialGaugeScale StartAngle="-150" EndAngle="150" Step="20" Min="0" Max="260"
+                    <RadzenRadialGaugeScale StartAngle="-150" EndAngle="150" Step="20" Min="0" Max="200"
                         TickPosition=@GaugeTickPosition.Inside>
                         <RadzenRadialGaugeScalePointer Value=@bpm Length="0.6" ShowValue=true>
                             <Template Context="pointer">
@@ -58,9 +80,10 @@
                                 </h4>
                             </Template>
                         </RadzenRadialGaugeScalePointer>
-                        <RadzenRadialGaugeScaleRange From="0" To="90" Fill="green" />
-                        <RadzenRadialGaugeScaleRange From="90" To="140" Fill="orange" />
-                        <RadzenRadialGaugeScaleRange From="140" To="260" Fill="red" />
+                        <RadzenRadialGaugeScaleRange From="50" To="80" Fill="green" />
+                        <RadzenRadialGaugeScaleRange From="80" To="100" Fill="yellow" />
+                        <RadzenRadialGaugeScaleRange From="0" To="50" Fill="red" />
+                        <RadzenRadialGaugeScaleRange From="100" To="260" Fill="red" />
                     </RadzenRadialGaugeScale>
                 </RadzenRadialGauge>
             </div>
@@ -73,8 +96,14 @@
         <div class="row">
             <div class="col-8">
                 <RadzenChart @ref="chart1" Style="height: 240px;">
-                    <RadzenLineSeries Stroke="purple" Smooth=true Data="@sensors" CategoryProperty="InDate" Title="SPO2"
+                    <RadzenLineSeries Stroke="blue" Smooth=true Data="@sensors" CategoryProperty="InDate" Title="SPO2"
                         ValueProperty="SPO2" />
+                    <RadzenLineSeries Stroke="grey" Smooth=true Data="@sensors2" CategoryProperty="InDate" Title="MAX"
+                        LineType="LineType.Solid" ValueProperty="MAX" />
+                    <RadzenLineSeries Stroke="grey" Smooth=true Data="@sensors2" CategoryProperty="InDate" Title="MID"
+                        LineType="LineType.Dashed" ValueProperty="MID" />
+                    <RadzenLineSeries Stroke="grey" Smooth=true Data="@sensors2" CategoryProperty="InDate" Title="MIN"
+                        LineType="LineType.Dotted" ValueProperty="MIN" />
                     <RadzenCategoryAxis Padding="20" FormatString="{0:HH:mm}" />
                     <RadzenValueAxis>
                         <RadzenGridLines Visible="true" />
@@ -83,7 +112,7 @@
             </div>
             <div class="col-4">
                 <RadzenRadialGauge Style="width: 240px; height: 240px;">
-                    <RadzenRadialGaugeScale StartAngle="-150" EndAngle="150" Step="20" Min="0" Max="260"
+                    <RadzenRadialGaugeScale StartAngle="-150" EndAngle="150" Step="2" Min="80" Max="100"
                         TickPosition=@GaugeTickPosition.Inside>
                         <RadzenRadialGaugeScalePointer Value=@spo2 Length="0.6" ShowValue=true>
                             <Template Context="pointer">
@@ -92,9 +121,9 @@
                                 </h4>
                             </Template>
                         </RadzenRadialGaugeScalePointer>
-                        <RadzenRadialGaugeScaleRange From="0" To="90" Fill="green" />
-                        <RadzenRadialGaugeScaleRange From="90" To="140" Fill="orange" />
-                        <RadzenRadialGaugeScaleRange From="140" To="260" Fill="red" />
+                        <RadzenRadialGaugeScaleRange From="98" To="100" Fill="green" />
+                        <RadzenRadialGaugeScaleRange From="94" To="98" Fill="yellow" />
+                        <RadzenRadialGaugeScaleRange From="80" To="94" Fill="red" />
                     </RadzenRadialGaugeScale>
                 </RadzenRadialGauge>
             </div>
@@ -107,58 +136,119 @@
     public int Id { get; set; }
     Patient patient { get; set; } = new Patient();
     List<Sensor> sensors = new List<Sensor>();
-    List<Sensor> data;
+    List<TSValue> sensors1 = new List<TSValue>();
+    List<TSValue> sensors2 = new List<TSValue>();
     double bpm = 0;
     double spo2 = 0;
+    bool live = false;
     DateTime last;
     RadzenChart chart0;
     RadzenChart chart1;
+    System.Timers.Timer timer = new System.Timers.Timer();
 
     protected override void OnInitialized()
     {
-        System.Timers.Timer timer = new System.Timers.Timer();
-        timer.Interval = 1000; // 3 secs in milliseconds
-        timer.Elapsed += OnTimedEvent;
+        timer.Interval = 2000; // 6 secs in milliseconds
         timer.AutoReset = true;
         timer.Enabled = true;
+        CheckChanged();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        patient = await dbContext.Beds.FirstOrDefaultAsync(p => p.Id == Id);
+        last = DateTime.Now;
+
+        await GetData();
+    }
+
+    private async Task GetData()
+    {
+
+        sensors.Clear();
+        sensors1.Clear();
+        sensors2.Clear();
+
+        var start = last.AddMinutes(-20);
+        var data = await dbContext.Sensors
+        .Where(p => p.BPM > 0 && p.SPO2 > 0 && p.InDate >= start && p.InDate <= last)
+        .Where(p => p.RoomId == "100" && p.BedId == 1)
+        .OrderBy(p => p.InDate)
+        .ToListAsync();
+
+        if (data.Count > 0)
+        {
+            sensors.AddRange(data);
+
+            {
+                var MIN = data.Min(t => t.BPM);
+                var MAX = data.Max(t => t.BPM);
+                var MID = (MIN + MAX) / 2;
+                var v1 = new TSValue { InDate = data.First().InDate, MIN = MIN, MAX = MAX, MID = MID };
+                var v2 = new TSValue { InDate = data.Last().InDate, MIN = MIN, MAX = MAX, MID = MID };
+                sensors1.AddRange(new TSValue[] { v1, v2 });
+            }
+
+            {
+                var MIN = data.Min(t => t.SPO2);
+                var MAX = data.Max(t => t.SPO2);
+                var MID = (MIN + MAX) / 2;
+                var v1 = new TSValue { InDate = data.First().InDate, MIN = MIN, MAX = MAX, MID = MID };
+                var v2 = new TSValue { InDate = data.Last().InDate, MIN = MIN, MAX = MAX, MID = MID };
+                sensors2.AddRange(new TSValue[] { v1, v2 });
+            }
+        }
+
+        sensors = sensors.ToList();
+        sensors1 = sensors1.ToList();
+        sensors2 = sensors2.ToList();
+        bpm = sensors.LastOrDefault()?.BPM ?? 0;
+        spo2 = sensors.LastOrDefault()?.SPO2 ?? 0;
+    }
+
+    private void CheckChanged()
+    {
+        live = !live;
+
+        if (live)
+        {
+            timer.Elapsed += OnTimedEvent;
+        }
+        else
+        {
+            timer.Elapsed -= OnTimedEvent;
+        }
     }
 
     void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e)
     {
         InvokeAsync(async () =>
         {
-            last = last.AddMinutes(1);
-            sensors.RemoveAt(0);
-            var random = new Random();
-            int index = random.Next(data.Count);
-            var ri = data[index];
-            sensors.Add(new Sensor
-            {
-                InDate = last,
-                BPM = ri.BPM,
-                SPO2 = ri.SPO2
-            });
-            sensors = sensors.ToList();
-            bpm = sensors.Last().BPM;
-            spo2 = sensors.Last().SPO2;
+            last = DateTime.Now;
+            await GetData();
             await chart0.Reload();
             await chart1.Reload();
             StateHasChanged();
         });
     }
 
-    protected override async Task OnParametersSetAsync()
+    private async Task DateChanged(ChangeEventArgs args)
     {
-        patient = await dbContext.Beds.FirstOrDefaultAsync(p => p.Id == Id);
-        data = await dbContext.Sensors
-        .Where(p => p.RoomId == "100" && p.BedId == 1 && p.BPM > 0 && p.SPO2 > 0 && p.InDate != null)
-        .OrderBy(p => p.InDate)
-        .ToListAsync();
+        if (args.Value != null)
+        {
+            var d = DateTime.ParseExact(args.Value.ToString(), "yyyy-MM-dd", null);
+            last = d.AddHours(last.Hour).AddMinutes(last.Minute);
+            await GetData();
+        }
+    }
 
-        last = data.Last().InDate.Value;
-        var start = last.AddMinutes(-20);
-        sensors = new List<Sensor>(data.Where(t => t.InDate >= start));
-        bpm = sensors.Last().BPM;
-        spo2 = sensors.Last().SPO2;
+    private async Task TimeChanged(ChangeEventArgs args)
+    {
+        if (args.Value != null)
+        {
+            var d = DateTime.ParseExact(args.Value.ToString(), "HH:mm:ss", null);
+            last = last.Date.AddHours(d.Hour).AddMinutes(d.Minute);
+            await GetData();
+        }
     }
 }

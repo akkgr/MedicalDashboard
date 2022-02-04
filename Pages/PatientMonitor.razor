@@ -7,71 +7,105 @@
 
 <PageTitle>Patient Monitor</PageTitle>
 
-<h1>Patient Monitor</h1>
-<h2>@last.ToString("dd/MM/yyyy HH:mm")</h2>
-
-<div class="row">
-    <div class="col-8">
-        <RadzenChart @ref="chart0">
-            <RadzenLineSeries Smooth=true Data="@sensors" CategoryProperty="InDate" Title="BPM" ValueProperty="BPM" />
-            <RadzenCategoryAxis Padding="20" FormatString="{0:mm:ss}" />
-            <RadzenValueAxis>
-                <RadzenGridLines Visible="true" />
-            </RadzenValueAxis>
-        </RadzenChart>
-    </div>
-    <div class="col-4">
-        <RadzenRadialGauge Style="width: 250px; height: 250px;">
-            <RadzenRadialGaugeScale StartAngle="-150" EndAngle="150" Step="20" Min="0" Max="260"
-                TickPosition=@GaugeTickPosition.Inside>
-                <RadzenRadialGaugeScalePointer Value=@bpm Length="0.6" ShowValue=true>
-                    <Template Context="pointer">
-                        <h4>
-                            @pointer.Value <sup>bpm</sup>
-                        </h4>
-                    </Template>
-                </RadzenRadialGaugeScalePointer>
-                <RadzenRadialGaugeScaleRange From="0" To="90" Fill="green" />
-                <RadzenRadialGaugeScaleRange From="90" To="140" Fill="orange" />
-                <RadzenRadialGaugeScaleRange From="140" To="260" Fill="red" />
-            </RadzenRadialGaugeScale>
-        </RadzenRadialGauge>
+<div class="card mb-2">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-10">
+                <h5>@patient.Surname @patient.Firstname </h5>
+                <div>
+                    <span class="fw-bold me-2">Father Name :</span><span class="me-4">@patient.Fathername</span>
+                    <span class="fw-bold me-2">Birth Date :</span><span>@patient.Birthdate</span>
+                </div>
+                <div>
+                    <span class="fw-bold me-2">Admission Date :</span><span
+                        class="me-4">@patient.InDate.ToString("f")</span>
+                    <span class="fw-bold me-2">Department :</span><span class="me-4">@patient.Department</span>
+                    <span class="fw-bold me-2">Room :</span><span class="me-4">@patient.Room</span>
+                    <span class="fw-bold me-2">Bed :</span><span>@patient.Bed.ToString()</span>
+                </div>
+                <div>
+                    <span class="fw-bold me-2">Diagnosis :</span><span>@patient.Description</span>
+                </div>
+            </div>
+            <div class="col-2">
+                <a href="/patients" class="btn btn-outline-primary">Patient List</a>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-8">
-        <RadzenChart @ref="chart1">
-            <RadzenLineSeries Smooth=true Data="@sensors" CategoryProperty="InDate" Title="SPO2" ValueProperty="SPO2" />
-            <RadzenCategoryAxis Padding="20" FormatString="{0:HH:mm}" />
-            <RadzenValueAxis>
-                <RadzenGridLines Visible="true" />
-            </RadzenValueAxis>
-        </RadzenChart>
+<div class="card mb-2">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-8">
+                <RadzenChart @ref="chart0" Style="height: 240px;">
+                    <RadzenLineSeries Stroke="blue" Smooth=true Data="@sensors" CategoryProperty="InDate" Title="BPM"
+                        ValueProperty="BPM" />
+                    <RadzenCategoryAxis Padding="20" FormatString="{0:HH:mm}" />
+                    <RadzenValueAxis>
+                        <RadzenGridLines Visible="true" />
+                    </RadzenValueAxis>
+                </RadzenChart>
+            </div>
+            <div class="col-4">
+                <RadzenRadialGauge Style="width: 240px; height: 240px;">
+                    <RadzenRadialGaugeScale StartAngle="-150" EndAngle="150" Step="20" Min="0" Max="260"
+                        TickPosition=@GaugeTickPosition.Inside>
+                        <RadzenRadialGaugeScalePointer Value=@bpm Length="0.6" ShowValue=true>
+                            <Template Context="pointer">
+                                <h4>
+                                    @pointer.Value <sup>bpm</sup>
+                                </h4>
+                            </Template>
+                        </RadzenRadialGaugeScalePointer>
+                        <RadzenRadialGaugeScaleRange From="0" To="90" Fill="green" />
+                        <RadzenRadialGaugeScaleRange From="90" To="140" Fill="orange" />
+                        <RadzenRadialGaugeScaleRange From="140" To="260" Fill="red" />
+                    </RadzenRadialGaugeScale>
+                </RadzenRadialGauge>
+            </div>
+        </div>
     </div>
-    <div class="col-4">
-        <RadzenRadialGauge Style="width: 250px; height: 250px;">
-            <RadzenRadialGaugeScale StartAngle="-150" EndAngle="150" Step="20" Min="0" Max="260"
-                TickPosition=@GaugeTickPosition.Inside>
-                <RadzenRadialGaugeScalePointer Value=@spo2 Length="0.6" ShowValue=true>
-                    <Template Context="pointer">
-                        <h4>
-                            @pointer.Value <sup>SPO2</sup>
-                        </h4>
-                    </Template>
-                </RadzenRadialGaugeScalePointer>
-                <RadzenRadialGaugeScaleRange From="0" To="90" Fill="green" />
-                <RadzenRadialGaugeScaleRange From="90" To="140" Fill="orange" />
-                <RadzenRadialGaugeScaleRange From="140" To="260" Fill="red" />
-            </RadzenRadialGaugeScale>
-        </RadzenRadialGauge>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-8">
+                <RadzenChart @ref="chart1" Style="height: 240px;">
+                    <RadzenLineSeries Stroke="purple" Smooth=true Data="@sensors" CategoryProperty="InDate" Title="SPO2"
+                        ValueProperty="SPO2" />
+                    <RadzenCategoryAxis Padding="20" FormatString="{0:HH:mm}" />
+                    <RadzenValueAxis>
+                        <RadzenGridLines Visible="true" />
+                    </RadzenValueAxis>
+                </RadzenChart>
+            </div>
+            <div class="col-4">
+                <RadzenRadialGauge Style="width: 240px; height: 240px;">
+                    <RadzenRadialGaugeScale StartAngle="-150" EndAngle="150" Step="20" Min="0" Max="260"
+                        TickPosition=@GaugeTickPosition.Inside>
+                        <RadzenRadialGaugeScalePointer Value=@spo2 Length="0.6" ShowValue=true>
+                            <Template Context="pointer">
+                                <h4>
+                                    @pointer.Value <sup>SPO2</sup>
+                                </h4>
+                            </Template>
+                        </RadzenRadialGaugeScalePointer>
+                        <RadzenRadialGaugeScaleRange From="0" To="90" Fill="green" />
+                        <RadzenRadialGaugeScaleRange From="90" To="140" Fill="orange" />
+                        <RadzenRadialGaugeScaleRange From="140" To="260" Fill="red" />
+                    </RadzenRadialGaugeScale>
+                </RadzenRadialGauge>
+            </div>
+        </div>
     </div>
 </div>
 
 @code {
     [Parameter]
     public int Id { get; set; }
-    Patient patient { get; set; }
+    Patient patient { get; set; } = new Patient();
     List<Sensor> sensors = new List<Sensor>();
     List<Sensor> data;
     double bpm = 0;
@@ -104,11 +138,12 @@
                 BPM = ri.BPM,
                 SPO2 = ri.SPO2
             });
+            sensors = sensors.ToList();
             bpm = sensors.Last().BPM;
             spo2 = sensors.Last().SPO2;
-            sensors = sensors.ToList();
             await chart0.Reload();
             await chart1.Reload();
+            StateHasChanged();
         });
     }
 

@@ -6,29 +6,20 @@
 
 <PageTitle>Patients</PageTitle>
 
-<h1>Patients</h1>
-
-<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.Advanced" AllowSorting="true"
-    PageSize="10" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
-    Data="@patients" TItem="Patient" LogicalFilterOperator="LogicalFilterOperator.And">
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.Simple" AllowSorting="true"
+    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowGrouping="false" PageSize="15" AllowPaging="true"
+    PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true" Data="@patients" TItem="Patient"
+    LogicalFilterOperator="LogicalFilterOperator.And">
     <Columns>
-        <RadzenDataGridColumn TItem="Patient" Property="Id" Title="ID" />
-        <RadzenDataGridColumn TItem="Patient" Property="RoomName" Title="Room" />
-        <RadzenDataGridColumn TItem="Patient" Property="BedId" Title="Bed" />
-        <RadzenDataGridColumn TItem="Patient" Property="PatName" Title="Patient" />
-        <RadzenDataGridColumn TItem="Patient" Title="Sex">
-            <Template Context="data">
-                @if (data.Sex == "Άρρεν")
-                {
-                    <span><i class="bi bi-gender-male"></i></span>
-                }
-                else
-                {
-                    <span><i class="bi bi-gender-female"></i></span>
-                }
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="Patient" Property="InDate" Title="Admission" />
+        <RadzenDataGridColumn TItem="Patient" Property="Id" Title="ADM ID" />
+        <RadzenDataGridColumn TItem="Patient" Property="Department" Title="DEPT" />
+        <RadzenDataGridColumn TItem="Patient" Property="PatientId" Title="PAT ID" />
+        <RadzenDataGridColumn TItem="Patient" Property="InDate" Title="ADM DATE" FormatString="{0:d}" />
+        <RadzenDataGridColumn TItem="Patient" Property="Surname" Title="Surname" />
+        <RadzenDataGridColumn TItem="Patient" Property="Firstname" Title="Firstname" />
+        <RadzenDataGridColumn TItem="Patient" Property="Department" Title="DEPT" />
+        <RadzenDataGridColumn TItem="Patient" Property="Room" Title="Room" />
+        <RadzenDataGridColumn TItem="Patient" Property="Bed" Title="Bed" />
         <RadzenDataGridColumn TItem="Patient" Title="" Filterable=false Sortable=false
             TextAlign=Radzen.TextAlign.Center>
             <Template Context="data">
@@ -42,6 +33,10 @@
 
     protected override void OnInitialized()
     {
-        patients = dbContext.Beds;
+        patients = dbContext.Beds
+        .Where(t => t.Room != null)
+        .OrderBy(t => t.Surname)
+        .ThenBy(t => t.Surname)
+        .ThenBy(t => t.Fathername);
     }
 }

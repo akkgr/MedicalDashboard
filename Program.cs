@@ -6,6 +6,8 @@ using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddLocalization();
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
@@ -18,6 +20,8 @@ builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
 
 var app = builder.Build();
+
+app.UseRequestLocalization("el-GR");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

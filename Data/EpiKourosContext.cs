@@ -14,19 +14,23 @@ public class EpiKourosContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Patient>().ToTable("beds_old");
+        modelBuilder.Entity<Patient>().ToTable("beds");
         modelBuilder.Entity<Patient>().HasKey(m => m.Id);
-        modelBuilder.Entity<Patient>().Property(m => m.Id).HasColumnName("id");
-        modelBuilder.Entity<Patient>().Property(b => b.RoomId).HasColumnName("ROOM_ID");
-        modelBuilder.Entity<Patient>().Property(b => b.RoomName).HasColumnName("ROOM_NAME");
-        modelBuilder.Entity<Patient>().Property(b => b.BedId).HasColumnName("BED_ID");
-        modelBuilder.Entity<Patient>().Property(b => b.PatName).HasColumnName("PAT_NAME");
-        modelBuilder.Entity<Patient>().Property(b => b.Sex).HasColumnName("PAT_SEX");
-        modelBuilder.Entity<Patient>().Property(b => b.InDate).HasColumnName("ADM_IN_DATETIME");
+        modelBuilder.Entity<Patient>().Property(m => m.Id).HasColumnName("ADM_ID");
+        modelBuilder.Entity<Patient>().Property(b => b.Department).HasColumnName("ADM_DEPT");
+        modelBuilder.Entity<Patient>().Property(b => b.PatientId).HasColumnName("PAT_ID");
+        modelBuilder.Entity<Patient>().Property(b => b.InDate).HasColumnName("ADM_IN_DATETIME").HasColumnType("datetime");
+        modelBuilder.Entity<Patient>().Property(b => b.Surname).HasColumnName("PAT_SURNAME");
+        modelBuilder.Entity<Patient>().Property(b => b.Firstname).HasColumnName("PAT_FIRSTNAME");
+        modelBuilder.Entity<Patient>().Property(b => b.Fathername).HasColumnName("PAT_FATHERNAME");
+        modelBuilder.Entity<Patient>().Property(b => b.Birthdate).HasColumnName("PAT_BIRTH_DATE");
+        modelBuilder.Entity<Patient>().Property(b => b.Description).HasColumnName("DIAGN_DESC");
+        modelBuilder.Entity<Patient>().Property(b => b.Room).HasColumnName("ADM_ROOM_CODE");
+        modelBuilder.Entity<Patient>().Property(b => b.Bed).HasColumnName("ADM_BED");
 
         modelBuilder.Entity<Sensor>().ToTable("vdevslog");
         modelBuilder.Entity<Sensor>().HasKey(m => m.Id);
-        modelBuilder.Entity<Patient>().Property(m => m.Id).HasColumnName("id");
+        modelBuilder.Entity<Sensor>().Property(m => m.Id).HasColumnName("id");
         modelBuilder.Entity<Sensor>().Property(b => b.RoomId).HasColumnName("room");
         modelBuilder.Entity<Sensor>().Property(b => b.BedId).HasColumnName("bed");
         modelBuilder.Entity<Sensor>().Property(b => b.InDate).HasColumnName("updtime");
